@@ -56,6 +56,7 @@
     }
 
     var element = container.children[0];
+    var pageElement = container.children[1];
     var slides, slidePos, width, length;
     options = options || {};
     var index = parseInt(options.startSlide, 10) || 0;
@@ -64,6 +65,7 @@
 
     // AutoRestart option: auto restart slideshow after user's touch event
     options.autoRestart = options.autoRestart !== undefined ? options.autoRestart : false;
+    options.bullet = options.bullet != undefined ? options.bullet : false;
 
     function setup() {
 
@@ -118,7 +120,13 @@
       }
 
       container.style.visibility = 'visible';
-
+      if(options.bullet) {
+        for (var i = 0; i < length; i++) {
+          var bul  = document.createElement('span');
+          bul.setAttribute('class',"swipe-pagination-bullet");
+          pageElement.appendChild(bul);
+        };
+      }
     }
 
     function prev() {
@@ -209,7 +217,19 @@
       }
 
       index = to;
+      handleBullet(index);
       offloadFn(options.callback && options.callback(getPos(), slides[index]));
+    }
+
+    function handleBullet(index){
+      if(!options.bullet) return;
+      for (var i = 0; i < pageElement.children.length; i++) {
+          if(i === index) {
+             pageElement.children[i].setAttribute("class","swipe-pagination-bullet active");
+          }else {
+             pageElement.children[i].setAttribute("class","swipe-pagination-bullet");
+          }
+      }  
     }
 
     function move(index, dist, speed) {
